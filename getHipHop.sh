@@ -2,6 +2,9 @@
 
 echo "Welcome to the Hip Hop Show... show... show... show... show... show... show"
 
+# Associative array declaration
+declare -A ShowName Type ShowDate DownloadFileName FullUrl UrlStart UrlEnd FinishError OutputFileName
+
 function setDateByDay {
   YYYY=$(date +"%Y" -d "last $1")
   MM=$(date +"%m" -d "last $1")
@@ -9,22 +12,24 @@ function setDateByDay {
   echo "$YYYY"'-'"$MM"'-'"$DD"
 }
 
-# Scrape first parameter for date
-if [ "$1" != "" ]
-  then
-    dateRegex="([0-9]{4})-([0-9]{2})-([0-9]{2})"
-    [[ $1 =~ $dateRegex ]]
-    YYYY="${BASH_REMATCH[1]}"
-    MM="${BASH_REMATCH[2]}"
-    DD="${BASH_REMATCH[3]}"
-    episodeDate="$YYYY"'-'"$MM"'-'"$DD"
-fi
+function getDateFromParam {
+  # Scrape first parameter for date
+  if [ "$1" != "" ]
+    then
+      dateRegex="([0-9]{4})-([0-9]{2})-([0-9]{2})"
+      [[ $1 =~ $dateRegex ]]
+      YYYY="${BASH_REMATCH[1]}"
+      MM="${BASH_REMATCH[2]}"
+      DD="${BASH_REMATCH[3]}"
+      echo "$YYYY"'-'"$MM"'-'"$DD"
+  fi
+}
 
 if [ -e getHipHop.config ]
   then
     . getHipHop.config
     # Override shows if 2nd parameter present
-    [[ $2 ]] && unset ShowsToDownload && ShowsToDownload=($2)
+    [[ $1 ]] && unset ShowsToDownload && ShowsToDownload=($1)
   else
     echo "ERROR: No configuration file found, exiting now."
     exit
@@ -69,11 +74,7 @@ do
               echo 'Fetching segment '"$segment"
               curl -o $segmentFile ${UrlStart[$show]}$segment${UrlEnd[$show]}
               curlResult=$?
-              # TODO why is this not !=0?
               if [ $curlResult != 0 ]
-              # if [ $curlResult == "6" ] || [ $curlResult == "7" ]
-              # 6 = Couldn't resolve host
-              # 7 = Failed to connect to host
                 then
                   echo "Error $curlResult received, trying again"
                 else

@@ -10,9 +10,11 @@ Requires ffmpeg for conversion of file streams.
 
 By default it fetches the most recent Hip Sista Hop from 3CR, and Triple J's Hip Hop Show.
 
-To fetch an older show provide a date as the first paramater in format YYYY-MM-DD:
+To fetch a specific show provide a date and show name in format:
 
-`./getHipHop.sh 2018-04-12`
+`./getHipHop.sh HipHopShow 2018-04-12`
+
+Note: ShowName must match an existing show in `getHipHop.config`
 
 ## Config options
 `getHipHop.config` allows you to:
