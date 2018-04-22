@@ -9,7 +9,6 @@ function setDateByDay {
   echo "$YYYY"'-'"$MM"'-'"$DD"
 }
 
-# TODO add second parameter to set specific show.
 # Scrape first parameter for date
 if [ "$1" != "" ]
   then
@@ -24,6 +23,8 @@ fi
 if [ -e getHipHop.config ]
   then
     . getHipHop.config
+    # Override shows if 2nd parameter present
+    [[ $2 ]] && unset ShowsToDownload && ShowsToDownload=($2)
   else
     echo "ERROR: No configuration file found, exiting now."
     exit
